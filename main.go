@@ -1,12 +1,11 @@
 package main
 
 import (
-	"os"
-	"fmt"
+	"github.com/veganafro/trendly-backend/nyt"
 )
 
 func main() {
-	fmt.Println("hello world")
-	os.Exit(0)
+	nytClient := nyt.NewClient("testing")
+	nytClient.GetMostShared(1)
 }
 
