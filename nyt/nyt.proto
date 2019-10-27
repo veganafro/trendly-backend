@@ -1,0 +1,17 @@
+syntax = "proto3";
+package nyt;
+
+service NytService {
+
+    rpc GetMostShared(NytRequest) returns (NytResponse) {}
+}
+
+message NytRequest {
+    string token = 1;
+    int32 period = 2;
+}
+
+message NytResponse {
+    string response = 1;
+}
+
