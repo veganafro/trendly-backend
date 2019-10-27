@@ -16,11 +16,11 @@ func Listen() {
 	}
 	opts := make([]grpc.ServerOption, 0)
 	grpcServer := grpc.NewServer(opts...)
-	RegisterNytServiceServer(grpcServer, &NytServer{ Client: *NewClient("test") })
+	RegisterNytServiceServer(grpcServer, &NytServer{ Client: *NewClient() })
 	grpcServer.Serve(conn)
 }
 
-func NewClient(token string) *NytClient {
+func NewClient() *NytClient {
 	client := &http.Client {
 		CheckRedirect: func(request * http.Request, via[] * http.Request) error {
 			return http.ErrUseLastResponse
@@ -28,7 +28,7 @@ func NewClient(token string) *NytClient {
 		Timeout: 30 * time.Second,
 	}
 	endpoint := "https://api.nytimes.com/"
-	nytClient := &NytClient{ Client: *client, Endpoint: endpoint, Token: token }
+	nytClient := &NytClient{ Client: *client, Endpoint: endpoint }
 	return nytClient
 }
 
