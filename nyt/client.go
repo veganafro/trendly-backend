@@ -2,7 +2,6 @@ package nyt
 
 import (
 	"log"
-	"time"
 	"path"
 	"strconv"
 	"net/http"
@@ -14,29 +13,21 @@ type NytClient struct {
 	Token string
 }
 
-func NewClient(token string) *NytClient {
-	client := &http.Client {
-		CheckRedirect: func(request * http.Request, via[] * http.Request) error {
-			return http.ErrUseLastResponse
-		},
-		Timeout: 30 * time.Second,
-	}
-	endpoint := "https://api.nytimes.com/"
-	nytClient := &NytClient{ Client: *client, Endpoint: endpoint, Token: token }
-	return nytClient
+type NytMostShared struct {
+	Response string
 }
 
-func (nytClient * NytClient) GetMostShared(period int) {
+func (nytClient * NytClient) GetMostShared(period int32) (*http.Response, error) {
 	request, error := http.NewRequest("GET", nytClient.Endpoint, nil)
 
 	if error != nil {
-		log.Fatal("Error creating new request", error)
+		log.Fatal("client: Error creating new request", error)
 	}
 
 	request.URL.Path = path.Join(
 		request.URL.Path,
 		"svc/mostpopular/v2/shared",
-		strconv.Itoa(period),
+		strconv.Itoa(int(period)),
 	)
 
 	query := request.URL.Query()
@@ -49,8 +40,9 @@ func (nytClient * NytClient) GetMostShared(period int) {
 	defer response.Body.Close()
 
 	if error != nil {
-		log.Fatal("Error executing request for most shared", error)
+		log.Fatal("client: Error executing request for most shared", error)
 	}
-	log.Println("Request status:", response.Status)
+	log.Println("client: Request status:", response.Status)
+	return response, error
 }
 
