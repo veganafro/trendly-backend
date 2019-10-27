@@ -10,14 +10,13 @@ import (
 type NytClient struct {
 	Client http.Client
 	Endpoint string
-	Token string
 }
 
 type NytMostShared struct {
 	Response string
 }
 
-func (nytClient * NytClient) GetMostShared(period int32) (*http.Response, error) {
+func (nytClient * NytClient) GetMostShared(token string, period int32) (*http.Response, error) {
 	request, error := http.NewRequest("GET", nytClient.Endpoint, nil)
 
 	if error != nil {
@@ -31,7 +30,7 @@ func (nytClient * NytClient) GetMostShared(period int32) (*http.Response, error)
 	)
 
 	query := request.URL.Query()
-	query.Add("api-key", nytClient.Token)
+	query.Add("api-key", token)
 	request.URL.RawQuery = query.Encode()
 
 	request.Header.Add("Accept", "application/json")
